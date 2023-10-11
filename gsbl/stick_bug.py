@@ -320,13 +320,22 @@ class StickBug:
         interp_clip = editor.ImageSequenceClip(interp_frames, 30)
         clips.append(interp_clip.set_audio(audio_transform.set_end(interp_clip.end)))
 
-        # concatenate all the clips and add the audio
         all_clips = editor.concatenate_videoclips(clips)
         # all_clips = all_clips.set_audio(editor.AudioFileClip(audio_path))
 
-        # add stick bug video to the end
-        stick_bug_clip = video_stick_bug.resize(stick_bug_scale).set_start(all_clips.end).set_position('center')
-        self._video = editor.CompositeVideoClip([all_clips, stick_bug_clip])
+        # Your code for creating stick_bug_clip
+        stick_bug_duration = 31  # Set the desired duration in seconds
+
+        # Create a placeholder clip with the same dimensions as the stick_bug_clip
+        #placeholder_clip = editor.ImageClip(np.zeros(self._video_resolution, dtype=np.uint8), duration=stick_bug_duration)
+
+        # Set video_stick_bug as the background for stick_bug_clip and adjust scaling_factor
+        scaling_factor = min(self._video_resolution[0] / video_stick_bug.w, self._video_resolution[1] / video_stick_bug.h)
+        stick_bug_clip = video_stick_bug.resize(scaling_factor)
+        stick_bug_clip = stick_bug_clip.set_duration(stick_bug_duration)
+
+        # Concatenate all the clips
+        self._video = editor.concatenate_videoclips([all_clips, stick_bug_clip])
 
         self._video_processed = True
 

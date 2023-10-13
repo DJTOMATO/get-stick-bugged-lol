@@ -348,8 +348,11 @@ class StickBug:
         """Save the video file"""
         self.video.write_videofile(
             fp,
-            codec='libx264',
-            audio_codec='aac',
-            temp_audiofile='temp-audio.m4a',
+            threads=1,
+            preset="superfast",
+            verbose=False,
+            codec="libx264",
+            audio_codec="aac",
+            temp_audiofile="temp-audio.aac",
             remove_temp=True
         )

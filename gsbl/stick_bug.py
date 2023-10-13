@@ -353,6 +353,6 @@ class StickBug:
             verbose=False,
             codec="libx264",
             audio_codec="aac",
-            temp_audiofile="temp-audio.aac",
+            temp_audiofile="temp-audio.mp4",
             remove_temp=True
         )

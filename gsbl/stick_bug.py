@@ -6,6 +6,11 @@ from PIL import Image, ImageDraw
 from moviepy import editor
 from pylsd.lsd import lsd
 
+import moviepy
+from moviepy.editor import CompositeVideoClip, VideoFileClip
+from moviepy.editor import VideoFileClip
+from moviepy.editor import *
+
 # static media files
 pkg_path = os.path.dirname(os.path.realpath(__file__))
 video_stick_bug = editor.VideoFileClip(os.path.join(pkg_path, 'media/stick_bug.mp4'))

@@ -13,25 +13,32 @@ from moviepy.editor import *
 
 # static media files
 pkg_path = os.path.dirname(os.path.realpath(__file__))
-video_stick_bug = editor.VideoFileClip(os.path.join(pkg_path, 'media/stick_bug.webm'))
+video_stick_bug = editor.VideoFileClip(os.path.join(pkg_path, "media/stick_bug.webm"))
 audio_notes = [
-    editor.AudioFileClip(os.path.join(pkg_path, 'media/note0.wav')),
-    editor.AudioFileClip(os.path.join(pkg_path, 'media/note1.wav')),
-    editor.AudioFileClip(os.path.join(pkg_path, 'media/note2.wav')),
-    editor.AudioFileClip(os.path.join(pkg_path, 'media/note3.wav')),
-    editor.AudioFileClip(os.path.join(pkg_path, 'media/note4.wav')),
-    editor.AudioFileClip(os.path.join(pkg_path, 'media/note5.wav')),
-    editor.AudioFileClip(os.path.join(pkg_path, 'media/note6.wav')),
-    editor.AudioFileClip(os.path.join(pkg_path, 'media/note7.wav')),
-    editor.AudioFileClip(os.path.join(pkg_path, 'media/note8.wav')),
-    editor.AudioFileClip(os.path.join(pkg_path, 'media/note9.wav')),
+    editor.AudioFileClip(os.path.join(pkg_path, "media/note0.wav")),
+    editor.AudioFileClip(os.path.join(pkg_path, "media/note1.wav")),
+    editor.AudioFileClip(os.path.join(pkg_path, "media/note2.wav")),
+    editor.AudioFileClip(os.path.join(pkg_path, "media/note3.wav")),
+    editor.AudioFileClip(os.path.join(pkg_path, "media/note4.wav")),
+    editor.AudioFileClip(os.path.join(pkg_path, "media/note5.wav")),
+    editor.AudioFileClip(os.path.join(pkg_path, "media/note6.wav")),
+    editor.AudioFileClip(os.path.join(pkg_path, "media/note7.wav")),
+    editor.AudioFileClip(os.path.join(pkg_path, "media/note8.wav")),
+    editor.AudioFileClip(os.path.join(pkg_path, "media/note9.wav")),
 ]
-audio_transform = editor.AudioFileClip(os.path.join(pkg_path, 'media/transform.wav'))
+audio_transform = editor.AudioFileClip(os.path.join(pkg_path, "media/transform.wav"))
 
 
 class StickBug:
-    def __init__(self, img: Union[Image.Image, str] = None, video_resolution=(720, 720), lsd_scale=0.8,
-                 img_bg_color=(0, 0, 0), line_color=(255, 255, 211), line_bg_color=(125, 115, 119)):
+    def __init__(
+        self,
+        img: Union[Image.Image, str] = None,
+        video_resolution=(720, 720),
+        lsd_scale=0.8,
+        img_bg_color=(0, 0, 0),
+        line_color=(255, 255, 211),
+        line_bg_color=(125, 115, 119),
+    ):
         """
         Class that generates a stick bug meme from an image.
         :param img: The source image. Can be a PIL Image, a filepath, or left empty.
@@ -62,17 +69,19 @@ class StickBug:
         self._stick_bug_video_offset = (0, 0)
 
         # end segment points
-        self._end_segments = np.array([
-            [315, 212, 408, 262, 8],
-            [408, 262, 511, 263, 8],
-            [236, 266, 332, 223, 8],
-            [170, 339, 236, 266, 8],
-            [268, 351, 320, 228, 8],
-            [319, 297, 372, 247, 8],
-            [306, 353, 319, 297, 8],
-            [364, 360, 398, 260, 8],
-            [494, 370, 489, 264, 8],
-        ])
+        self._end_segments = np.array(
+            [
+                [315, 212, 408, 262, 8],
+                [408, 262, 511, 263, 8],
+                [236, 266, 332, 223, 8],
+                [170, 339, 236, 266, 8],
+                [268, 351, 320, 228, 8],
+                [319, 297, 372, 247, 8],
+                [306, 353, 319, 297, 8],
+                [364, 360, 398, 260, 8],
+                [494, 370, 489, 264, 8],
+            ]
+        )
 
         if self._img is not None:
             self.process_image()
@@ -204,21 +213,30 @@ class StickBug:
     def process_image(self):
         """Calculate the image's offset and scale in the video."""
         # resize image to fit video resolution without cropping
-        scale = min(self._video_resolution[0] / self._img.width, self._video_resolution[1] / self._img.height)
-        self._img_scaled = self._img.resize((int(self._img.width * scale), int(self._img.height * scale)))
+        scale = min(
+            self._video_resolution[0] / self._img.width,
+            self._video_resolution[1] / self._img.height,
+        )
+        self._img_scaled = self._img.resize(
+            (int(self._img.width * scale), int(self._img.height * scale))
+        )
 
         # calculate image offset to center image in video
-        self._img_offset = ((self._video_resolution[0] - self._img_scaled.width) // 2,
-                            (self._video_resolution[1] - self._img_scaled.height) // 2)
+        self._img_offset = (
+            (self._video_resolution[0] - self._img_scaled.width) // 2,
+            (self._video_resolution[1] - self._img_scaled.height) // 2,
+        )
 
         self._img_processed = True
 
     def process_segments(self):
         """Run the line segment detector."""
         if self._img is None:
-            raise ValueError('image must be set before running the line segment detector')
+            raise ValueError(
+                "image must be set before running the line segment detector"
+            )
 
-        img_gray = np.array(self._img_scaled.convert('L'))
+        img_gray = np.array(self._img_scaled.convert("L"))
 
         lsd_result = lsd(img_gray, scale=self._lsd_scale)
 
@@ -231,7 +249,9 @@ class StickBug:
         # find distance of each line segment
         for i in range(segments_d.shape[0]):
             x1, y1, x2, y2, *_ = segments_d[i]
-            segments_d[i, 5] = np.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)  # distance formula
+            segments_d[i, 5] = np.sqrt(
+                (x2 - x1) ** 2 + (y2 - y1) ** 2
+            )  # distance formula
 
         # sort and remove distance column
         lsd_sorted = segments_d[segments_d[:, 5].argsort()[::-1]][:, :-1]
@@ -252,11 +272,13 @@ class StickBug:
         5. The stick bug video
         """
         if self._img is None:
-            raise ValueError('image must be set before the video can be generated')
+            raise ValueError("image must be set before the video can be generated")
 
         # scale stick bug video and end segments
-        stick_bug_scale = min(self._video_resolution[0] / video_stick_bug.w,
-                              self._video_resolution[1] / video_stick_bug.h)
+        stick_bug_scale = min(
+            self._video_resolution[0] / video_stick_bug.w,
+            self._video_resolution[1] / video_stick_bug.h,
+        )
 
         num_frames = 52  # number of frames that the lines will be moving
 
@@ -269,22 +291,53 @@ class StickBug:
         segments_centered[:, 0:3:2] += self._img_offset[0]
         segments_centered[:, 1:4:2] += self._img_offset[1]
 
-        end_segments_offset = ((self._video_resolution[0] - video_stick_bug.w * stick_bug_scale) // 2,
-                               (self._video_resolution[1] - video_stick_bug.h * stick_bug_scale) // 2)
+        end_segments_offset = (
+            (self._video_resolution[0] - video_stick_bug.w * stick_bug_scale) // 2,
+            (self._video_resolution[1] - video_stick_bug.h * stick_bug_scale) // 2,
+        )
         end_segments_centered = self._end_segments * stick_bug_scale
         end_segments_centered[:, 0:3:2] += end_segments_offset[0]
         end_segments_centered[:, 1:4:2] += end_segments_offset[1]
 
         for i in range(self._segments.shape[0]):
-            segment_frames[i] = np.array([
-                np.linspace(self._segments[i][0], end_segments_centered[i][0], num_frames, dtype=int),
-                np.linspace(self._segments[i][1], end_segments_centered[i][1], num_frames, dtype=int),
-                np.linspace(self._segments[i][2], end_segments_centered[i][2], num_frames, dtype=int),
-                np.linspace(self._segments[i][3], end_segments_centered[i][3], num_frames, dtype=int),
-                np.linspace(self._segments[i][4], end_segments_centered[i][4], num_frames, dtype=int),
-            ]).transpose()
+            segment_frames[i] = np.array(
+                [
+                    np.linspace(
+                        self._segments[i][0],
+                        end_segments_centered[i][0],
+                        num_frames,
+                        dtype=int,
+                    ),
+                    np.linspace(
+                        self._segments[i][1],
+                        end_segments_centered[i][1],
+                        num_frames,
+                        dtype=int,
+                    ),
+                    np.linspace(
+                        self._segments[i][2],
+                        end_segments_centered[i][2],
+                        num_frames,
+                        dtype=int,
+                    ),
+                    np.linspace(
+                        self._segments[i][3],
+                        end_segments_centered[i][3],
+                        num_frames,
+                        dtype=int,
+                    ),
+                    np.linspace(
+                        self._segments[i][4],
+                        end_segments_centered[i][4],
+                        num_frames,
+                        dtype=int,
+                    ),
+                ]
+            ).transpose()
 
-        segment_frames = np.transpose(segment_frames, (1, 0, 2))  # [frame, segment, point]
+        segment_frames = np.transpose(
+            segment_frames, (1, 0, 2)
+        )  # [frame, segment, point]
 
         # GENERATE VIDEO
         # list of clips in the video
@@ -292,7 +345,7 @@ class StickBug:
 
         # first clip is just the source image
         # center the image on a black background
-        frame = Image.new('RGB', self._video_resolution, self._img_bg_color)
+        frame = Image.new("RGB", self._video_resolution, self._img_bg_color)
         frame.paste(self._img_scaled, tuple(self._img_offset))
         clips.append(editor.ImageClip(np.array(frame), duration=1))
 
@@ -302,7 +355,11 @@ class StickBug:
         for i in range(segment_frames[0].shape[0]):
             x1, y1, x2, y2, w = segment_frames[0][i]
             draw.line((x1, y1, x2, y2), fill=self._line_color, width=int(w))
-            clips.append(editor.ImageClip(np.array(frame), duration=0.33).set_audio(audio_notes[i]))
+            clips.append(
+                editor.ImageClip(np.array(frame), duration=0.33).set_audio(
+                    audio_notes[i]
+                )
+            )
 
         # one more slightly longer clip for the last segment
         clips.append(editor.ImageClip(np.array(frame), duration=1))
@@ -312,7 +369,9 @@ class StickBug:
         for segment in segment_frames[0]:
             x1, y1, x2, y2, w = segment
             draw.line((x1, y1, x2, y2), fill=self._line_color, width=int(w))
-        clips.append(editor.ImageClip(np.array(frame), duration=0.75).set_audio(audio_notes[9]))
+        clips.append(
+            editor.ImageClip(np.array(frame), duration=0.75).set_audio(audio_notes[9])
+        )
 
         # use an ImageSequenceClip for the line interpolation
         interp_frames = []
@@ -332,7 +391,10 @@ class StickBug:
         stick_bug_duration = 31  # Set the desired duration in seconds
 
         # Set video_stick_bug as the background for stick_bug_clip and adjust scaling_factor
-        scaling_factor = min(self._video_resolution[0] / video_stick_bug.w, self._video_resolution[1] / video_stick_bug.h)
+        scaling_factor = min(
+            self._video_resolution[0] / video_stick_bug.w,
+            self._video_resolution[1] / video_stick_bug.h,
+        )
         stick_bug_clip = video_stick_bug.resize(scaling_factor)
         stick_bug_clip = stick_bug_clip.set_duration(stick_bug_duration)
 
@@ -348,7 +410,9 @@ class StickBug:
             threads=4,  # Increase threads for better parallelism
             preset="ultrafast",  # Faster encoding
             verbose=False,
-            codec="libvpx",  # Use WebM-specific codec (VP8/VP9)
+            codec="libvpx-vp9",  # Use WebM-specific codec (VP8/VP9)
+            audio_codec="libopus",
+            ffmpeg_params=["-b:v", "1M", "-ar", "48000"]
             temp_audiofile="temp-audio2.webm",
-            remove_temp=True
+            remove_temp=True,
         )

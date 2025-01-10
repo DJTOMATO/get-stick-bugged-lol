@@ -349,7 +349,6 @@ class StickBug:
             preset="ultrafast",  # Faster encoding
             verbose=False,
             codec="libvpx",  # Use WebM-specific codec (VP8/VP9)
-            audio_codec="libopus",  # Use libopus for WebM audio
             temp_audiofile="temp-audio2.webm",
             remove_temp=True
         )

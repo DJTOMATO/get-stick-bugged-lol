@@ -13,7 +13,7 @@ from moviepy.editor import *
 
 # static media files
 pkg_path = os.path.dirname(os.path.realpath(__file__))
-video_stick_bug = editor.VideoFileClip(os.path.join(pkg_path, 'media/stick_bug.mp4'))
+video_stick_bug = editor.VideoFileClip(os.path.join(pkg_path, 'media/stick_bug.webm'))
 audio_notes = [
     editor.AudioFileClip(os.path.join(pkg_path, 'media/note0.wav')),
     editor.AudioFileClip(os.path.join(pkg_path, 'media/note1.wav')),
@@ -331,9 +331,6 @@ class StickBug:
         # Your code for creating stick_bug_clip
         stick_bug_duration = 31  # Set the desired duration in seconds
 
-        # Create a placeholder clip with the same dimensions as the stick_bug_clip
-        #placeholder_clip = editor.ImageClip(np.zeros(self._video_resolution, dtype=np.uint8), duration=stick_bug_duration)
-
         # Set video_stick_bug as the background for stick_bug_clip and adjust scaling_factor
         scaling_factor = min(self._video_resolution[0] / video_stick_bug.w, self._video_resolution[1] / video_stick_bug.h)
         stick_bug_clip = video_stick_bug.resize(scaling_factor)
@@ -345,14 +342,14 @@ class StickBug:
         self._video_processed = True
 
     def save_video(self, fp: str):
-        """Save the video file"""
+        """Save the video file with improved speed"""
         self.video.write_videofile(
             fp,
-            threads=1,
-            preset="superfast",
+            threads=4,  # Increase threads for better parallelism
+            preset="ultrafast",  # Faster encoding
             verbose=False,
-            codec="libx264",
-            audio_codec="aac",
-            temp_audiofile="temp-audio2.mp4",
+            codec="libvpx",  # Use WebM-specific codec (VP8/VP9)
+            audio_codec="libopus",  # Use libopus for WebM audio
+            temp_audiofile="temp-audio2.webm",
             remove_temp=True
         )

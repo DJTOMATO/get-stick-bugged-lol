@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name='get-stick-bugged-lol',
-    version='1.0.1',
+    version='1.0.2',
     author='n0spaces',
     description="'Get stick bugged' video generator v2",
     long_description=long_description,

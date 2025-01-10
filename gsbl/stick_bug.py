@@ -15,18 +15,18 @@ from moviepy.editor import *
 pkg_path = os.path.dirname(os.path.realpath(__file__))
 video_stick_bug = editor.VideoFileClip(os.path.join(pkg_path, "media/stick_bug.webm"))
 audio_notes = [
-    editor.AudioFileClip(os.path.join(pkg_path, "media/note0.wav")),
-    editor.AudioFileClip(os.path.join(pkg_path, "media/note1.wav")),
-    editor.AudioFileClip(os.path.join(pkg_path, "media/note2.wav")),
-    editor.AudioFileClip(os.path.join(pkg_path, "media/note3.wav")),
-    editor.AudioFileClip(os.path.join(pkg_path, "media/note4.wav")),
-    editor.AudioFileClip(os.path.join(pkg_path, "media/note5.wav")),
-    editor.AudioFileClip(os.path.join(pkg_path, "media/note6.wav")),
-    editor.AudioFileClip(os.path.join(pkg_path, "media/note7.wav")),
-    editor.AudioFileClip(os.path.join(pkg_path, "media/note8.wav")),
-    editor.AudioFileClip(os.path.join(pkg_path, "media/note9.wav")),
+    editor.AudioFileClip(os.path.join(pkg_path, "media/note0.opus")),
+    editor.AudioFileClip(os.path.join(pkg_path, "media/note1.opus")),
+    editor.AudioFileClip(os.path.join(pkg_path, "media/note2.opus")),
+    editor.AudioFileClip(os.path.join(pkg_path, "media/note3.opus")),
+    editor.AudioFileClip(os.path.join(pkg_path, "media/note4.opus")),
+    editor.AudioFileClip(os.path.join(pkg_path, "media/note5.opus")),
+    editor.AudioFileClip(os.path.join(pkg_path, "media/note6.opus")),
+    editor.AudioFileClip(os.path.join(pkg_path, "media/note7.opus")),
+    editor.AudioFileClip(os.path.join(pkg_path, "media/note8.opus")),
+    editor.AudioFileClip(os.path.join(pkg_path, "media/note9.opus")),
 ]
-audio_transform = editor.AudioFileClip(os.path.join(pkg_path, "media/transform.wav"))
+audio_transform = editor.AudioFileClip(os.path.join(pkg_path, "media/transform.opus"))
 
 
 class StickBug:
@@ -412,7 +412,7 @@ class StickBug:
             verbose=False,
             codec="libvpx-vp9",  # Use WebM-specific codec (VP8/VP9)
             audio_codec="libopus",
-            ffmpeg_params=["-b:v", "1M", "-ar", "48000"]
+            audio_bitrate="48k",
             temp_audiofile="temp-audio2.webm",
             remove_temp=True,
         )
